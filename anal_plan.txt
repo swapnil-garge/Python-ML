@@ -1,4 +1,28 @@
-he Analysis Plan: A Step-by-Step Approach
+Prompt 
+You are an expert Machine Learning engineer. You project is to identify root causes of low machine utilization and OEE of plant. You are given 5 target variables to analyze: Downtime (Hrs), Uptime, FPY %, Wound %, and OEE Availability. The data is daily average data where the date is in the column named 'GMT Prod Yield Date'. A column named Merge contains product type on that day. It also contains codes for shutdowns which may be planned for mainetnance or unplanned due to machine reliability. The data contains process and raw material variables which are daily averaged. Note that there may be 2 to 7 days lag in the actual process of when the raw materials actually hits the machine. So you would need to account for that. The material variables are X11, X12, X13, X14 , X15, X17, X24, X38 to X44. Out of these variables X14 and X17 are string variables.
+
+
+
+There is a pre-step in the process which takes 8-16 hours to complete, so the variables associated with the pre step can occassionably be lagged by a day as well. The pre-step variables are X5, X6, X7, X8, X18, X19, X25, X26, X28, X29, X34, X35, X36.
+
+
+
+Besides these there are process variables associated with machine. These are labeled from X1 to X33 excluding the ones described above. All numeric and non-numeric variables have some missing values scattered across the entire dataset
+
+
+
+Your first task is to identify shifts in target variables. The operations expect that there would like to see it by each product type in Merge. They believe that the product shifts may be leading to the low machine utilization. Create a comprehensive plan on how you will tackle the analysis. Also create a code to first programtically identify and analyze when the shifts are happening. Suggest what you would use for this step with reasons. Previous analysis have used methods like Cumsum plots to identify.
+
+
+
+Next step is to correlate the shifts to process, raw material and pre-step variable changes. Provide the complete steps including the code on how you would perform the analysis
+
+
+
+
+
+
+Analysis Plan: A Step-by-Step Approach
 This project requires a systematic approach to untangle the complex interactions between raw materials, pre-step processes, machine operations, and the final output metrics.
 
 Step 1: Data Cleaning and Preprocessing 🧹
