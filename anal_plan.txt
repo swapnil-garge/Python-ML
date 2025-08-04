@@ -1,0 +1,64 @@
+he Analysis Plan: A Step-by-Step Approach
+This project requires a systematic approach to untangle the complex interactions between raw materials, pre-step processes, machine operations, and the final output metrics.
+
+Step 1: Data Cleaning and Preprocessing 🧹
+The quality of our analysis hinges on clean, well-structured data.
+
+Handling Missing Values:
+
+Numerical Variables: For scattered missing data in process variables, we'll use an imputation method like k-Nearest Neighbors (k-NN) imputer. This is superior to simple mean/median imputation because it uses the values of neighboring data points to estimate the missing value, preserving the data's underlying structure.
+
+Categorical Variables: For the string variables (X14, X17), we will impute missing values with a placeholder like "Unknown" or use the mode (most frequent value).
+
+Data Type Conversion: Ensure the GMT Prod Yield Date is converted to a proper datetime object to enable time-based analysis and sorting.
+
+Categorical Encoding: The string variables (X14, X17, and Merge after separating shutdown codes) will be converted into a numerical format using one-hot encoding so they can be used in correlation and modeling steps later.
+
+Step 2: Shift Detection with Change Point Detection (CPD) 📈
+Your operations team is right to suspect that shifts in product type are impacting performance. While CUSUM plots are a valid tool, a more powerful and automated method is Change Point Detection (CPD).
+
+Why CPD? I recommend using the Pruned Exact Linear Time (PELT) algorithm.
+
+Accuracy: PELT is an exact algorithm, meaning it finds the optimal segmentation of the data, unlike heuristic methods.
+
+Automation: It can programmatically detect multiple change points without requiring manual threshold setting.
+
+Robustness: It's less susceptible to noise compared to simpler methods like CUSUM.
+
+Execution:
+
+Group the dataset by the Merge column (product type).
+
+For each product type, and for each of the five target variables, apply the PELT algorithm to the time series.
+
+This will give us the specific dates where the statistical properties (like the mean) of the target variable changed significantly.
+
+Visualize these change points by plotting the target variable over time and drawing vertical lines at the detected shift dates.
+
+Step 3: Feature Engineering for Time Lags ⏳
+To accurately correlate inputs to outputs, we must account for the described time delays.
+
+Raw Material Lag: For each material variable (X11, X12, etc.), we will create multiple new lagged features. For example, for X11, we'll create X11_lag2, X11_lag3, ..., X11_lag7. This means the value for a given day will be matched with the output from 2 to 7 days in the future.
+
+Pre-Step Lag: Similarly, for the pre-step variables (X5, X6, etc.), we will create a _lag1 version of each to account for the 8-16 hour processing time which can push its impact to the next day.
+
+Step 4: Root Cause Analysis: Correlating Shifts with Variables 🔗
+Once we know when the shifts happened, we can investigate why.
+
+Segment Analysis: We'll analyze the periods between the detected change points. For each segment, we will calculate the average value of all process, lagged raw material, and lagged pre-step variables.
+
+Statistical Correlation: We will perform statistical tests (e.g., ANOVA or t-tests) to see if there is a statistically significant difference in the input variables between the "before shift" and "after shift" periods.
+
+Feature Importance Modeling: To handle complex interactions, we will build a predictive model (like Gradient Boosting or Random Forest) for each target variable. The model's "feature importance" output will rank every process and material variable by its influence on the target. This is a powerful technique for identifying the most likely root causes, even when relationships are not simple linear correlations.
+
+Code: Identifying Target Variable Shifts
+Here is the Python code to perform the first major step of our plan: using Change Point Detection to identify and visualize shifts in your key metrics for each product type. I've included detailed comments to explain each part of the process.
+OEE Shift Detection Analysis
+Aug 4, 9:26 AM
+
+ Try again without Canvas 
+
+Next Steps & Conclusion
+This initial analysis will provide you with a set of critical dates where performance shifted for each product. These plots are the foundation for the next phase of our investigation.
+
+With these change points identified, the immediate next step is to execute Step 3 (Feature Engineering) and Step 4 (Root Cause Analysis) from the plan. We will create the lagged variables and then compare the process and material data from the periods before and after each change point. This will allow us to move from what changed to why it changed, ultimately identifying the levers you can pull to improve machine utilization and OEE.
